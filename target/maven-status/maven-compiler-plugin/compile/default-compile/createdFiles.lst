@@ -1,0 +1,8 @@
+model\UserMapper.class
+control\Kayak.class
+model\KayakMapper.class
+control\Booking.class
+control\User.class
+model\BookingMapper.class
+model\DB.class
+control\exceptions\BookingNotPossibleException.class
