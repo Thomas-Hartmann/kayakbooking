@@ -16,9 +16,19 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
     <body>
+
+        <% if (request.getAttribute("user") == null) { %>
+        Du skal først logge ind <a href="login.jsp">Gå til login siden</a>
+        <% } else {
+            User user = (User) request.getAttribute("user");
+            %>
+
+        <%@include file="navbar.jsp"%>
+
         <h1>Available kayaks:</h1>
         <table class="table table-striped">
             <tr>
+                <th>Image</th>
                 <th>Name</th>
                 <th>Model</th>
                 <th>Description</th>
@@ -27,30 +37,28 @@
                 <th>Date</th>
                 <th>Book now</th>
             </tr>   
-        <% if(request.getAttribute("kayaks")==null){ %>
-        Du skal først logge ind <a href="login.jsp">Gå til login siden</a>
-        <% } else {  
-        List<Kayak> kayaks = (List<Kayak>)request.getAttribute("kayaks");
-        User user = (User)request.getAttribute("user");
-        for(Kayak kayak : kayaks){
-        %>
-        <form action="BookKayak" method="POST"> 
-            <input type="hidden" name="kayakid" value="<%= kayak.getId()%>">
-            <input type="hidden" name="userid" value="<%= user.getId()%>">
-        <tr>
-            <td><%= kayak.getName()%></td>
-            <td><%= kayak.getModel()%></td>
-            <td><%= kayak.getDescription()%></td>
-            <td><%= kayak.getColor()%></td>
-            <td><%= kayak.getLength()%></td>
-            <td><input type="date" name="date"></td>
-            <td><input type="submit" name="submit" value="Book kayak"></td>
-        </tr>
-        </form>
-        <%
-        }
-        }
-        %>
+            <%            List<Kayak> kayaks = (List<Kayak>) request.getAttribute("kayaks");
+
+                for (Kayak kayak : kayaks) {
+            %>
+            <form action="BookKayak" method="POST"> 
+                <input type="hidden" name="kayakid" value="<%= kayak.getId()%>">
+                <input type="hidden" name="userid" value="<%= user.getId()%>">
+                <tr>
+                    <td><img src="ImageViewer?id=<%= kayak.getId()%>"></td>
+                    <td><%= kayak.getName()%></td>
+                    <td><%= kayak.getModel()%></td>
+                    <td><%= kayak.getDescription()%></td>
+                    <td><%= kayak.getColor()%></td>
+                    <td><%= kayak.getLength()%></td>
+                    <td><input type="date" name="date"></td>
+                    <td><input type="submit" name="submit" value="Book kayak"></td>
+                </tr>
+            </form>
+            <%
+                    }
+                }
+            %>
 
         </table>
     </body>

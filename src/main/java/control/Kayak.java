@@ -1,5 +1,7 @@
 package control;
 
+import java.io.InputStream;
+
 /**
  *
  * @author Thomas Hartmann - tha@cphbusiness.dk created on Nov 10, 2016
@@ -12,12 +14,12 @@ public class Kayak {
     private String description;
     private String color;
     private double length;
-    private byte[] image;
+    private InputStream image;
 
     public Kayak() {
     }
 
-    public Kayak(String name, String model, String description, String color, double length, byte[] image) {
+    public Kayak(String name, String model, String description, String color, double length, InputStream image) {
         this.name = name;
         this.model = model;
         this.description = description;
@@ -26,7 +28,7 @@ public class Kayak {
         this.image = image;
     }
 
-    public Kayak(int id, String name, String model, String description, String color, double length, byte[] image) {
+    public Kayak(int id, String name, String model, String description, String color, double length, InputStream image) {
         this.id = id;
         this.name = name;
         this.model = model;
@@ -80,11 +82,11 @@ public class Kayak {
         this.length = length;
     }
 
-    public byte[] getImage() {
+    public InputStream getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(InputStream image) {
         this.image = image;
     }
     

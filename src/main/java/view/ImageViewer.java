@@ -1,13 +1,10 @@
 package view;
 
 import control.ControlFacade;
-import control.exceptions.BookingNotPossibleException;
+import control.Kayak;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.InputStream;
+import java.io.OutputStream;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,8 +15,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Thomas Hartmann - tha@cphbusiness.dk created on Nov 11, 2016
  */
-@WebServlet(name="BookKayak", urlPatterns={"/BookKayak"})
-public class BookKayak extends HttpServlet {
+@WebServlet(name="ImageViewer", urlPatterns={"/ImageViewer"})
+public class ImageViewer extends HttpServlet {
    ControlFacade cf = new ControlFacade();
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -30,23 +27,17 @@ public class BookKayak extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
-        response.setContentType("text/html;charset=UTF-8");
-        int kayakid = Integer.parseInt(request.getParameter("kayakid"));
-        int userid = Integer.parseInt(request.getParameter("userid"));
-        DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = null;
-        try {
-            date = dateformat.parse(request.getParameter("date"));
-            cf.makeBooking(cf.getKayak(kayakid), cf.getUser(userid), date);
-        } catch (ParseException ex) {
-            out.print("Date could not be parsed");
-        } catch (BookingNotPossibleException ex) {
-            request.getSession().setAttribute("msg", "The booking could not be made. Try another kayak or another day.");
-            request.getRequestDispatcher("BookingServlet").forward(request, response);
-       }
-        out.println("SUCCES you have booked "+cf.getKayak(kayakid).getName()+" on "+date.toString());
-        out.println("<a href=\"showkayaks.jsp\">Go back to booking page</a>");
+        
+        response.setContentType("image/jpg");
+        int id = Integer.parseInt(request.getParameter("id"));
+        InputStream in = cf.getKayak(id).getImage();
+        OutputStream out = response.getOutputStream();
+        byte[] buffer = new byte[1024];
+        int count = 0;
+        while ((count = in.read(buffer))>0) {
+            out.write(buffer, 0, count);
+        }
+        in.close();
         out.close();
     } 
 

@@ -1,26 +1,24 @@
 package view;
 
-import control.ControlFacade;
-import control.exceptions.BookingNotPossibleException;
+import control.Booking;
+import control.User;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Comparator;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.BookingMapper;
 
 /**
  *
- * @author Thomas Hartmann - tha@cphbusiness.dk created on Nov 11, 2016
+ * @author Thomas Hartmann - tha@cphbusiness.dk created on Nov 30, 2016
  */
-@WebServlet(name="BookKayak", urlPatterns={"/BookKayak"})
-public class BookKayak extends HttpServlet {
-   ControlFacade cf = new ControlFacade();
+@WebServlet(name="BookingServlet", urlPatterns={"/BookingServlet"})
+public class BookingServlet extends HttpServlet {
+   private BookingMapper bm = new BookingMapper();
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -30,25 +28,27 @@ public class BookKayak extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
         response.setContentType("text/html;charset=UTF-8");
-        int kayakid = Integer.parseInt(request.getParameter("kayakid"));
-        int userid = Integer.parseInt(request.getParameter("userid"));
-        DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = null;
-        try {
-            date = dateformat.parse(request.getParameter("date"));
-            cf.makeBooking(cf.getKayak(kayakid), cf.getUser(userid), date);
-        } catch (ParseException ex) {
-            out.print("Date could not be parsed");
-        } catch (BookingNotPossibleException ex) {
-            request.getSession().setAttribute("msg", "The booking could not be made. Try another kayak or another day.");
-            request.getRequestDispatcher("BookingServlet").forward(request, response);
-       }
-        out.println("SUCCES you have booked "+cf.getKayak(kayakid).getName()+" on "+date.toString());
-        out.println("<a href=\"showkayaks.jsp\">Go back to booking page</a>");
-        out.close();
+        User user = (User)request.getSession().getAttribute("user");
+        if(user != null){
+            List<Booking> bookings = bm.getBookingsFromUser(user.getId());
+            request.getSession().setAttribute("bookings", bookings);
+        } else {
+            List<Booking> bookings = bm.getAllBookings();
+            sortByDate(bookings);
+            request.getSession().setAttribute("bookings", bookings);
+        }
+        response.sendRedirect("showbookings.jsp");
     } 
+
+    private void sortByDate(List<Booking> bookings) {
+        bookings.sort(new Comparator<Booking>() {
+            @Override
+            public int compare(Booking b1, Booking b2) {
+                return b1.getDate().compareTo(b2.getDate());
+            }
+        });
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
