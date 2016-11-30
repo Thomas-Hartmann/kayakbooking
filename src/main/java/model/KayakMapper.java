@@ -1,6 +1,6 @@
 package model;
 
-import control.Kayak;
+import model.entity.Kayak;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

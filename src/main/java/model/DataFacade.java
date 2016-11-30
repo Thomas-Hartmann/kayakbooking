@@ -1,9 +1,9 @@
 package model;
 
-import control.Booking;
-import control.Kayak;
-import control.User;
-import control.exceptions.BookingNotPossibleException;
+import model.entity.Booking;
+import model.entity.Kayak;
+import model.entity.User;
+import model.entity.exceptions.BookingNotPossibleException;
 import java.util.Date;
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package model;
 
-import control.User;
+import model.entity.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
